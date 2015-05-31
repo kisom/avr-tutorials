@@ -33,16 +33,21 @@ procedure Blink is
    LED : Boolean renames MCU.PortB_Bits (7);
 
 begin
-   MCU.DDRB_Bits :=  (others => Dd_Output);
+   MCU.DDRB_Bits :=  (others => DD_Output);
    Serial.Init(Serial.Baud_9600_16MHz);
 
-   Serial.Put_Line ("Boot OK");
+   Serial.Put ("Boot OK");
+   Serial.CRLF;
 
    loop
       LED :=  High;
       delay (0.1);
+
+      Serial.Put ("Beacon");
+      Serial.CRLF;
+
       LED := Low;
-      delay (0.1);
+      delay (0.9);
    end loop;
 
 end Blink;
