@@ -57,16 +57,17 @@ FORMAT = ihex
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = wiring
+AVRDUDE_PROGRAMMER = avrisp2
 
 # com1 = serial port.
 # programmer connected to serial device, add -b 57600 for Arduinos
 BAUD = -b 115200
-AVRDUDE_PORT = /dev/ttyACM0 $(BAUD) -v -F -D
+AVRDUDE_PORT = usb $(BAUD) -F 
 # avrdude -F -V -c stk500v2 -p m2560 -P /dev/ttyACM0 -b 115200 -U flash:w:led.hex:i
 
-AVRDUDE_WRITE_FLASH = -U flash:w:
-AVRDUDE_WRITE_EEPROM = -U eeprom:w:
+AVRDUDE_WRITE_FLASH =	-U flash:w:
+AVRDUDE_WRITE_EEPROM =	-U eeprom:w:
+AVRDUDE_CLEAR_BOOT =	-e -u -U hfuse:w:0xDD:m
 
 
 # Uncomment the following if you want avrdude's erase cycle counter.
@@ -81,7 +82,7 @@ AVRDUDE_WRITE_EEPROM = -U eeprom:w:
 # Increase verbosity level.  Please use this when submitting bug
 # reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude>
 # to submit bug reports.
-#AVRDUDE_VERBOSE = -v -v
+AVRDUDE_VERBOSE = -v -v
 
 AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
@@ -134,6 +135,10 @@ build: $(ADA_TARGETS_ELF) $(ADA_TARGETS_HEX) $(ADA_TARGETS_EEP) \
 %.prog: %.hex %.eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)$*.hex
 # $(AVRDUDE_WRITE_EEPROM)
+
+# Reset boot vector --- this is needed for some Arduinos (like the mega)
+reset-boot:
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_CLEAR_BOOT)
 
 # Create final output files (.hex, .eep) from ELF output file.
 %.hex: %.elf

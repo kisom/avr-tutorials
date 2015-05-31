@@ -18,13 +18,15 @@
 -- ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 -- OTHER DEALINGS IN THE SOFTWARE.
 
--- Blink demo for the Arduino Mega 2560.
+-- Blink demo for the Arduino Mega 2560. Prints a hello message on serial,
+-- then begins blinking the LED.
 
 with AVR;
 use  AVR;
 
 with AVR.MCU;             -- port and pin definitions.
 with AVR.Real_Time.Clock; -- required for delay to work.
+with AVR.Serial;
 
 procedure Blink is
 
@@ -32,12 +34,15 @@ procedure Blink is
 
 begin
    MCU.DDRB_Bits :=  (others => Dd_Output);
+   Serial.Init(Serial.Baud_9600_16MHz);
+
+   Serial.Put_Line ("Boot OK");
 
    loop
       LED :=  High;
-      delay (1.0);
+      delay (0.1);
       LED := Low;
-      delay (1.0);
+      delay (0.1);
    end loop;
 
 end Blink;
