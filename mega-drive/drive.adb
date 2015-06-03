@@ -26,6 +26,9 @@
 with AVR;
 use  AVR;
 
+with Interfaces;
+use  Interfaces;
+
 with AVR.MCU;             -- port and pin definitions.
 with AVR.Real_Time.Clock; -- required for delay to work.
 pragma Unreferenced (AVR.Real_Time.Clock);
@@ -35,6 +38,7 @@ procedure Drive is
 
    Right_Motor : Boolean renames MCU.PORTB_Bits (3); -- digital pin 11
    Left_Motor  : Boolean renames MCU.PORTB_Bits (4); -- digital pin 12
+   Speed       : Interfaces.Unsigned_16 := 140;
 
 begin
    MCU.DDRB_Bits :=  (others => DD_Output);
@@ -50,18 +54,21 @@ begin
    MCU.TCCR1A_Bits := (
                  MCU.COM1A1_Bit => True,
                  MCU.COM1A0_Bit => False,
+                 MCU.COM1B1_Bit => True,
+                 MCU.COM1B0_Bit => False,
                  MCU.WGM10_Bit  => True,
                  MCU.WGM11_Bit  => False,
                  others => False);
    MCU.TCCR1B_Bits := (
                  MCU.WGM12_Bit => True,
                  MCU.WGM13_Bit => False,
-                 MCU.CS10_Bit => False,
-                 MCU.CS11_Bit => True,
+                 MCU.CS10_Bit => True,
+                 MCU.CS11_Bit => False,
                  MCU.CS12_Bit => False,
                  others => False);
 
-   MCU.OCR1A := 16#b2#;
+   MCU.OCR1A := 170;
+   MCU.OCR1B := 230;
 
 loop
 null;
