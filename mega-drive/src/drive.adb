@@ -38,10 +38,13 @@ procedure Drive is
 
    Right_Motor : Boolean renames MCU.PORTB_Bits (3); -- digital pin 11
    Left_Motor  : Boolean renames MCU.PORTB_Bits (4); -- digital pin 12
-   Speed       : Interfaces.Unsigned_16 := 140;
+   LED1        : Boolean renames MCU.PORTH_Bits (5); -- digital pin 8
+   LED2        : Boolean renames MCU.PORTH_Bits (4); -- digital pin 7
+   Speed       : Interfaces.Unsigned_16 := 1000;
 
 begin
    MCU.DDRB_Bits :=  (others => DD_Output);
+   MCU.DDRH_Bits :=  (others => DD_Output);
    Timer1.Init_PWM (Timer1.Scale_By_8,
                     Timer1.Fast_PWM_8bit,
                     False);
@@ -49,29 +52,37 @@ begin
 
    MCU.DDRB_Bits (3) := DD_Output;
    MCU.DDRB_Bits (4) := DD_Output;
+   MCU.DDRH_Bits (4) := DD_Output;
+   MCU.DDRH_Bits (5) := DD_Output;
+
+   LED1 := High;
+   LED2 := High;
 
    MCU.PRR1_Bits (MCU.PRTIM1_Bit) := Low;
    MCU.TCCR1A_Bits := (
                  MCU.COM1A1_Bit => True,
-                 MCU.COM1A0_Bit => False,
                  MCU.COM1B1_Bit => True,
-                 MCU.COM1B0_Bit => False,
-                 MCU.WGM10_Bit  => True,
-                 MCU.WGM11_Bit  => False,
+                 MCU.WGM11_Bit  => True,
                  others => False);
    MCU.TCCR1B_Bits := (
                  MCU.WGM12_Bit => True,
-                 MCU.WGM13_Bit => False,
+                 MCU.WGM13_Bit => True,
                  MCU.CS10_Bit => True,
-                 MCU.CS11_Bit => False,
-                 MCU.CS12_Bit => False,
                  others => False);
+   MCU.ICR1 := 20_000; --  20ms top value
 
-   MCU.OCR1A := 170;
-   MCU.OCR1B := 230;
+   MCU.OCR1B := 3400;
+   MCU.OCR1A := 2600;
+   delay(1.0);
 
-loop
-null;
+   loop
+      LED1 := High;
+      delay(0.1);
+      LED1 := Low;
+      LED2 := High;
+      delay(0.1);
+      LED2 := Low;
+      delay(0.8);
    end loop;
 
 end Drive;

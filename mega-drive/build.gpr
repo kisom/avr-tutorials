@@ -1,10 +1,10 @@
-project Build extends "avr_app.gpr" is  -- 2: the name of the project has to match the file name
+project Build extends "avr_app.gpr" is
 
-   for Main use ("drive");             -- 4: the name of the main program
+   for Main use ("drive");
 
-   for Object_Dir use "obj";            -- 6: hide the generated files in a subdir
-   for Exec_Dir use ".";                -- 7: keep the main files in the current directory
+   for Object_Dir use "obj";
+   for Exec_Dir use "build";
 
-   for Source_Files use ("drive.adb"); -- 9: the list of required source files
+   for Source_Dirs use ("src");
 
 end Build;

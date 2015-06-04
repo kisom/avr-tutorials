@@ -40,6 +40,9 @@ GPR := build.gpr
 # put the names of the target files here (without extension)
 ADA_TARGETS := drive
 
+# build directory
+BUILD := build
+
 
 #---------------- GNATMAKE Options ----------------
 MFLAGS = -XMCU=$(MCU) -p -P$(GPR)
@@ -111,15 +114,16 @@ GNATMAKE := $(TOOLCHAIN)/avr-gnatmake
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
+ADA_TARGETS_ELF = $(addprefix $(BUILD)/, $(addsuffix .elf, $(ADA_TARGETS)))
+ADA_TARGETS_HEX = $(addprefix $(BUILD)/, $(addsuffix .hex, $(ADA_TARGETS)))
+ADA_TARGETS_EEP = $(addprefix $(BUILD)/, $(addsuffix .eep, $(ADA_TARGETS)))
+ADA_TARGETS_LSS = $(addprefix $(BUILD)/, $(addsuffix .lss, $(ADA_TARGETS)))
+ADA_TARGETS_SYM = $(addprefix $(BUILD)/, $(addsuffix .sym, $(ADA_TARGETS)))
+ADA_TARGETS_SIZE = $(addprefix $(BUILD)/, $(addsuffix .size, $(ADA_TARGETS)))
+
+
 # Default target.
 all: build
-
-ADA_TARGETS_ELF = $(addsuffix .elf, $(ADA_TARGETS))
-ADA_TARGETS_HEX = $(addsuffix .hex, $(ADA_TARGETS))
-ADA_TARGETS_EEP = $(addsuffix .eep, $(ADA_TARGETS))
-ADA_TARGETS_LSS = $(addsuffix .lss, $(ADA_TARGETS))
-ADA_TARGETS_SYM = $(addsuffix .sym, $(ADA_TARGETS))
-ADA_TARGETS_SIZE = $(addsuffix .size, $(ADA_TARGETS))
 
 # Create the necessary sub-directories
 SUBDIRS := obj
